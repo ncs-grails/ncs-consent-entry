@@ -1,6 +1,7 @@
 package edu.umn.ncs.consent
 
 import groovy.time.TimeDuration
+import edu.umn.ncs.ConsentAgreement
 
 // This represents a particular type of contract/consent/agreement
 // Mother / BioRep / Lease

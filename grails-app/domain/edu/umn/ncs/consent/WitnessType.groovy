@@ -1,5 +1,7 @@
 package edu.umn.ncs.consent
 
+import edu.umn.ncs.ConsentAgreement
+
 class WitnessType {
 	String name
 

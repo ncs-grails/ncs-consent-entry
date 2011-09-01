@@ -1,7 +1,5 @@
 package edu.umn.ncs
 
-import edu.umn.ncs.consent.ConsentAgreement
-
 class ConsentAgreementOtherOutcome {
 	ConsentAgreementOutcomeResponseCode responseCode
 	Date dateCreated = new Date()

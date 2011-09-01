@@ -1,8 +1,13 @@
 package edu.umn.ncs
 
-import edu.umn.ncs.Person
-import edu.umn.ncs.TrackedItem
+//import edu.umn.ncs.Person
+//import edu.umn.ncs.TrackedItem
 import edu.umn.ncs.consent.ConsentInstrument
+import edu.umn.ncs.consent.WitnessType
+import edu.umn.ncs.consent.ExpirationType
+import edu.umn.ncs.consent.AgreementType
+
+
 // Represent that actual contract/agreement/consent between
 // a person, and a particular contract
 
@@ -20,9 +25,9 @@ class ConsentAgreement {
 	// Type of Agreement
 	AgreementType agreementType
 	// sid, if this is ties to one...
-	TrackedItem sid
+	//TrackedItem sid
 	// Person to whom the consent pertains
-	Person person
+	//Person person
 	// Alternate contact involved in the agreement (Simone won)
 	// typically this is in the StudyData.dbo.contact_other table
 	Integer alternatePersonId
@@ -35,7 +40,7 @@ class ConsentAgreement {
 	// The type of consent are they agreeing to
 	static belongsTo = [ consent : ConsentInstrument]
 	
-	static hasMany=[ terms : TermsOfAgreement ]
+	//static hasMany=[ terms : TermsOfAgreement ]
 
     static constraints = {
     	agreementDate()
