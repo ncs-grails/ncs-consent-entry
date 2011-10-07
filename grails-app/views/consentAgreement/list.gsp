@@ -1,5 +1,5 @@
 
-<%@ page import="edu.umn.ncs.consent.ConsentAgreement" %>
+<%@ page import="edu.umn.ncs.ConsentAgreement" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -24,6 +24,16 @@
                         
                             <g:sortableColumn property="id" title="${message(code: 'consentAgreement.id.label', default: 'Id')}" />
                         
+                            <g:sortableColumn property="agreementDate" title="${message(code: 'consentAgreement.agreementDate.label', default: 'Agreement Date')}" />
+                        
+                            <g:sortableColumn property="witnessName" title="${message(code: 'consentAgreement.witnessName.label', default: 'Witness Name')}" />
+                        
+                            <th><g:message code="consentAgreement.witnessType.label" default="Witness Type" /></th>
+                        
+                            <g:sortableColumn property="expirationDate" title="${message(code: 'consentAgreement.expirationDate.label', default: 'Expiration Date')}" />
+                        
+                            <th><g:message code="consentAgreement.sid.label" default="Sid" /></th>
+                        
                         </tr>
                     </thead>
                     <tbody>
@@ -31,6 +41,16 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                             <td><g:link action="show" id="${consentAgreementInstance.id}">${fieldValue(bean: consentAgreementInstance, field: "id")}</g:link></td>
+                        
+                            <td><g:formatDate date="${consentAgreementInstance.agreementDate}" /></td>
+                        
+                            <td>${fieldValue(bean: consentAgreementInstance, field: "witnessName")}</td>
+                        
+                            <td>${fieldValue(bean: consentAgreementInstance, field: "witnessType")}</td>
+                        
+                            <td><g:formatDate date="${consentAgreementInstance.expirationDate}" /></td>
+                        
+                            <td>${fieldValue(bean: consentAgreementInstance, field: "sid")}</td>
                         
                         </tr>
                     </g:each>

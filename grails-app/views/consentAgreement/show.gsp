@@ -1,5 +1,5 @@
 
-<%@ page import="edu.umn.ncs.consent.ConsentAgreement" %>
+<%@ page import="edu.umn.ncs.ConsentAgreement" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -26,6 +26,83 @@
                             <td valign="top" class="name"><g:message code="consentAgreement.id.label" default="Id" /></td>
                             
                             <td valign="top" class="value">${fieldValue(bean: consentAgreementInstance, field: "id")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.agreementDate.label" default="Agreement Date" /></td>
+                            
+                            <td valign="top" class="value"><g:formatDate date="${consentAgreementInstance?.agreementDate}" /></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.witnessName.label" default="Witness Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: consentAgreementInstance, field: "witnessName")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.witnessType.label" default="Witness Type" /></td>
+                            
+                            <td valign="top" class="value"><g:link controller="witnessType" action="show" id="${consentAgreementInstance?.witnessType?.id}">${consentAgreementInstance?.witnessType?.encodeAsHTML()}</g:link></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.expirationDate.label" default="Expiration Date" /></td>
+                            
+                            <td valign="top" class="value"><g:formatDate date="${consentAgreementInstance?.expirationDate}" /></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.sid.label" default="Sid" /></td>
+                            
+                            <td valign="top" class="value"><g:link controller="trackedItem" action="show" id="${consentAgreementInstance?.sid?.id}">${consentAgreementInstance?.sid?.encodeAsHTML()}</g:link></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.alternatePersonId.label" default="Alternate Person Id" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: consentAgreementInstance, field: "alternatePersonId")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.createdByWhom.label" default="Created By Whom" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: consentAgreementInstance, field: "createdByWhom")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.createdWhen.label" default="Created When" /></td>
+                            
+                            <td valign="top" class="value"><g:formatDate date="${consentAgreementInstance?.createdWhen}" /></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.lastUpdated.label" default="Last Updated" /></td>
+                            
+                            <td valign="top" class="value"><g:formatDate date="${consentAgreementInstance?.lastUpdated}" /></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.consent.label" default="Consent" /></td>
+                            
+                            <td valign="top" class="value"><g:link controller="consentInstrument" action="show" id="${consentAgreementInstance?.consent?.id}">${consentAgreementInstance?.consent?.encodeAsHTML()}</g:link></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="consentAgreement.person.label" default="Person" /></td>
+                            
+                            <td valign="top" class="value"><g:link controller="person" action="show" id="${consentAgreementInstance?.person?.id}">${consentAgreementInstance?.person?.encodeAsHTML()}</g:link></td>
                             
                         </tr>
                     

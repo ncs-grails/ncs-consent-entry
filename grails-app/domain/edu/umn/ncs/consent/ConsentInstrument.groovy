@@ -1,7 +1,8 @@
 package edu.umn.ncs.consent
 
-import groovy.time.TimeDuration
+import edu.umn.ncs.Instrument
 import edu.umn.ncs.ConsentAgreement
+import groovy.time.TimeDuration
 
 // This represents a particular type of contract/consent/agreement
 // Mother / BioRep / Lease
@@ -17,8 +18,10 @@ class ConsentInstrument {
 	Integer revision = 1
 
 	// Optional EventCode / BatchEvent.id
+	//Integer eventCode // StudyData version: change to ->
 	// BatchEvent batchEvent
-	Integer eventCode
+	
+	Instrument instrument // need instrumentId
 	
 	// The Doc Gen configuration that makes these
 	// BatchCreationConfig batchCreationConfig
@@ -28,12 +31,24 @@ class ConsentInstrument {
 	// smb://rifle.cccs.umn.edu/rifle/documents/secret/consent.odt
 	URL sourceDocument
 
+	// In previous version this wax in ConsentAgreement: 
+	// however, these are actually tied to the consent instrument not an agreement.
+	ExpirationType expirationType
+	// Type of Agreement
+	AgreementType agreementType
+	
+	ConsentInstrument childInstrument 
+	Boolean hasChild
+	
+	Boolean hasOtherOutcome // has a disposiition beyond accept/reject
+	
+	Boolean enableWitness // requires a witness to sign instrument
 	// provenance
 	Date dateCreated
 	String createdBy
 	Date lastUpdated
 	
-	// Map from the consent itself to all of the signed consents
+	// Map from the consent itself to all of the signed consents of its type
 	static hasMany = [ agreements : ConsentAgreement ]
 
 	String toString() { name }
@@ -43,7 +58,10 @@ class ConsentInstrument {
 		duration(nullable: true )
 		description(maxSize:2000)
 		revision()
-		eventCode(nullable: true)
+		instrument(nullable: true)
+		expirationType(nullable: true)
+		agreementType(nullable: true)
+		childInstrument(nullable:true)
 		documentId(nullable: true)
 		sourceDocument(nullable: true, url:true)
 		createdBy(display:false)

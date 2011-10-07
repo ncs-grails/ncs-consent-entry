@@ -21,13 +21,13 @@ class ConsentAgreement {
 	WitnessType witnessType
 	// Expiration date and type 
 	Date expirationDate
-	ExpirationType expirationType
+	// ExpirationType expirationType -> moved to consentInstrument
 	// Type of Agreement
-	AgreementType agreementType
+	// AgreementType agreementType -> moved to consentInstrument
 	// sid, if this is ties to one...
-	//TrackedItem sid
+	TrackedItem trackedItem
 	// Person to whom the consent pertains
-	//Person person
+	Person person
 	// Alternate contact involved in the agreement (Simone won)
 	// typically this is in the StudyData.dbo.contact_other table
 	Integer alternatePersonId

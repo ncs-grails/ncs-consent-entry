@@ -6,8 +6,7 @@ package edu.umn.ncs.consent
 class AgreementType {
 
     String name
-    
-    
+        
     String toString() { name }
 
     static constraints = {
