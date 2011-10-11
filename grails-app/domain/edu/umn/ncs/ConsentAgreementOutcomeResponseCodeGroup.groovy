@@ -1,6 +1,7 @@
 package edu.umn.ncs
 
 import edu.umn.ncs.consent.ConsentInstrument
+import edu.umn.ncs.Result
 
 
 class ConsentAgreementOutcomeResponseCodeGroup {
@@ -13,7 +14,7 @@ class ConsentAgreementOutcomeResponseCodeGroup {
 	//TO DO: link to Result
 	//Result linkedResult
 	
-	Integer linkedResult
+	Result linkedResult
 	
     static belongsTo = [ consent: ConsentInstrument, 
 		outcomeResponseCode: ConsentAgreementOutcomeResponseCode ]

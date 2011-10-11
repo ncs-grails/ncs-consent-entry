@@ -47,11 +47,8 @@ class ConsentAgreement {
 		witnessName(nullable: true)
 		witnessType(nullable: true)
 		expirationDate(nullable: true)
-		expirationType(nullable: true)
-		agreementType()
-		sid(nullable: true)
+		trackedItem(nullable: true)
 		alternatePersonId(nullable: true)
-		
 		createdByWhom(display:false)
 		createdWhen(display:false)
         lastUpdated(nullable: true, display:false)

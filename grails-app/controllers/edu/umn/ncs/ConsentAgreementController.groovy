@@ -60,7 +60,7 @@ class ConsentAgreementController {
 			// Figure out instrument type of TrackedItem
 			def instrumentInstance = trackedItemInstance?.batch?.primaryInstrument
 			
-			// look for any ConsentAgreement with the instrument associated with that sid for that person
+			// look for any ConsentAgreement with the instrument associated with that trackedItem for that person
 			def consentAgreementInstance = ConsentAgreement?.createCriteria()?.get{
 				trackedItem{
 					and{
@@ -87,7 +87,7 @@ class ConsentAgreementController {
 					consentAgreementInstance: consentAgreementInstance]
 			}
 			else {
-				flash.message = "SID for consent already logged! ${params?.id}"
+				flash.message = "Tracked Item ID for consent already logged! ${params?.id}"
 			}
 			
 		} 
@@ -109,6 +109,12 @@ class ConsentAgreementController {
 	        consentAgreementInstance = new ConsentAgreement()
 			consentAgreementInstance.trackedItem = trackedItemInstance
 			consentAgreementInstance.person = consentAgreementInstance?.trackedItem?.person 
+			
+			if (debug) {
+				println "consentAgreementInstance.trackedItem:c:::${consentAgreementInstance.trackedItem}"
+				println "consentAgreementInstance.person:c:::${consentAgreementInstance.person}"
+				println "consentAgreementInstance.params:c:::${consentAgreementInstance.properties}"
+			}
 	        
 			//def batchEventInstance = consentAgreementInstance?.sid?.batch?.primaryBatchEvent
 			//consentAgreementInstance.consent = ConsentInstrument.findByEventCode(batchEventInstance?.id)
@@ -118,6 +124,11 @@ class ConsentAgreementController {
 			// get instrument type and link ConsentAgreement to it so that we can grab the proper outcome disposition codes
 			def consentInstrumentInstance = ConsentInstrument.findByInstrument(instrumentInstance)
 			consentAgreementInstance.consent = consentInstrumentInstance
+			
+			if (debug) {
+				println "consentInstrumentInstance:c:::${consentInstrumentInstance}"
+				println "consentAgreementInstance.consent:c:::${consentAgreementInstance.consent}"
+			}
 						
 			//def consentInstrumentInstance = ConsentInstrument.findByEventCode(batchEventInstance?.id)
 			
@@ -134,12 +145,11 @@ class ConsentAgreementController {
 					println "consentSecondaryResponseList::::${consentSecondaryResponseList}"
 				}
 			}	
-			
-			
+						
 	        if (debug) {
 	            println "consentInstance::::${consentInstrumentInstance}"
 	            println "consentResponseList:s::${consentResponseList}"
-				println "Returning stuff: Event ${consentAgreementInstance.trackedItem}, Tracked Item ${consentAgreementInstance.trackedItem}, Consent Agreement ${consentAgreementInstance}, Response List ${consentResponseList}"
+				println "Returning stuff: Event ${consentAgreementInstance.trackedItem}, Consent Agreement ${consentAgreementInstance}, Response List ${consentResponseList}"
 	        }
 	
 			return [instrumentInstance: instrumentInstance,
@@ -165,18 +175,16 @@ class ConsentAgreementController {
         }
 		// instance exists so let's process it
         if (consentAgreementInstance) {
-			def itemResult = ItemResult.findByTrackedItem(consentAgreementInstance.trackedItem)
+			//def itemResult = ItemResult.findByTrackedItem(consentAgreementInstance?.trackedItem)
 			
             if (params.responseCode?.id) { //} && resultLogged){
-                def outcomeCode = null
-				// determine what the linked result for chosen response group is
+                
+				// determine what the linked result for chosen response group is and use to pass to logResult service
                 def responseCode = ConsentAgreementOutcomeResponseCode.findById(params.responseCode?.id)
 				def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(responseCode)
-				outcomeCode = Result.read(responseGroup?.linkedResult)
-				// the better way
-				//outcomeCode = responseCode?.outcomeGroup?.linkedResult
+				
 				if (debug) {
-					println "Transact:create:outcomeCode::::${outcomeCode}"
+					println "Transact:create:responseGroup?.linkedResult?.id::: ${responseGroup?.linkedResult?.id}"
 					println "Transact:create:params.responseCode?.id ::::${params.responseCode?.id}"
 					println "Transact:create:params.responseGroup ::::${responseGroup}"
 				    println "params.agreementDate::::${params?.agreementDateString}"
@@ -274,7 +282,7 @@ class ConsentAgreementController {
 					
 					// TODO: Added parentInstrument to ConsentInstrument; need to fix code below
 					if (consent.childInstrument) {
-						// get linked sid for item 2, and log result for it
+						// get linked trackedItem for item 2, and log result for it
 						logResultService.logChildResult(trackedItemInstance, responseGroup)
 					}
 					

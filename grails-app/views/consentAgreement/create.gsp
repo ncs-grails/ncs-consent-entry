@@ -23,7 +23,10 @@
                 <g:renderErrors bean="${consentAgreementInstance}" as="list" />
             </div>
             </g:hasErrors>
-            <g:form action="save" >
+            <<g:form action="save" method="post" >
+				<g:hiddenField name="trackedItem.id" value="${consentAgreementInstance?.trackedItem?.id}" />
+				<g:hiddenField name="person.id" value="${consentAgreementInstance?.person?.id}" />
+				<g:hiddenField name="consent.id" value="${consentAgreementInstance?.consent?.id}" />
                 <div class="dialog">
                     <table>
                         <tbody>
@@ -33,7 +36,7 @@
                                     <label for="receiptDate"><g:message code="consentAgreement.receiptDate.label" default="Receipt Date" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'receiptDate', 'errors')}">
-                                    <g:datePicker name="receiptDate" precision="day" />
+                                    <g:datePicker name="receiptDatestring" precision="day" />
                                 </td>
                             </tr>
                             
@@ -42,7 +45,7 @@
                                     <label for="agreementDate"><g:message code="consentAgreement.agreementDate.label" default="Agreement Date" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'agreementDate', 'errors')}">
-                                    <g:datePicker name="agreementDate" precision="day" value="${consentAgreementInstance?.agreementDate}"  />
+                                    <g:datePicker name="agreementDatestring" precision="day" value="${consentAgreementInstance?.agreementDate}"  />
                                 </td>
                             </tr>
                         
@@ -68,9 +71,9 @@
                            
 	                          <tr class="prop">
 					           	<td valign="top" class="name">
-					            	<label for="sid"><g:message code="consentAgreement.sid.label" default="trackedItem" /></label>
+					            	<label for="trackedItem"><g:message code="consentAgreement.trackedItem.label" default="trackedItem ID" /></label>
 					            </td>
-					            <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'sid', 'errors')}">
+					            <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'trackedItem', 'errors')}">
 								${consentAgreementInstance?.trackedItem?.id}
 					          	</td>
 					         </tr>

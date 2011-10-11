@@ -193,14 +193,20 @@ class BootStrap {
         }
 
         // Result
-        def acceptedResult = Result.findByName('aceepted')
+        def acceptedResult = Result.findByName('accepted')
         if (!acceptedResult) {
             acceptedResult = new Result(name:'accepted', abbreviation:'accept').save()
         }
+		
+		println "Result:accepted:${acceptedResult}"
+		
 		def refusedResult = Result.findByName('refused')
 		if (!refusedResult) {
 			refusedResult = new Result(name:'refused', abbreviation:'refuse').save()
 		}
+		
+		println "refusedResult:${refusedResult}"
+		
         def receivedResult = Result.findByName('received')
         if (!receivedResult) {
             receivedResult = new Result(name:'received', abbreviation:'rcvd').save()

@@ -94,6 +94,7 @@ class LogResultService {
 		
 	} */
 	
+	// logs itemResult for trackedItem
 	def logResult = {trackedItemInstance, responseGroup ->
 		
 		def message = ''
@@ -106,7 +107,7 @@ class LogResultService {
 
 				def username = authenticateService.principal().getUsername()
 				def appName = "consent-entry"
-				def receivedDate = params.receiptDate //TODO: add to create/update view
+				def receivedDate = params.receiptDate 
 				
 				
 				if ( ! receivedDate ) {
