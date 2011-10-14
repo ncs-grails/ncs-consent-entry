@@ -36,7 +36,7 @@
                                     <label for="receiptDate"><g:message code="consentAgreement.receiptDate.label" default="Receipt Date" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'receiptDate', 'errors')}">
-                                    <g:datePicker name="receiptDatestring" precision="day" />
+                                    <g:datePicker name="receiptDate" precision="day" />
                                 </td>
                             </tr>
                             
@@ -45,7 +45,7 @@
                                     <label for="agreementDate"><g:message code="consentAgreement.agreementDate.label" default="Agreement Date" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'agreementDate', 'errors')}">
-                                    <g:datePicker name="agreementDatestring" precision="day" value="${consentAgreementInstance?.agreementDate}"  />
+                                    <g:datePicker name="agreementDate" precision="day" value="${consentAgreementInstance?.agreementDate}"  />
                                 </td>
                             </tr>
                         

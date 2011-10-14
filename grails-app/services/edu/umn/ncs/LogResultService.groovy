@@ -1,6 +1,6 @@
 package edu.umn.ncs
 import groovy.sql.Sql;
-import org.joda.time.LocalDate;
+import org.joda.time.*
 import org.codehaus.groovy.grails.plugins.orm.auditable.*
 
 import edu.umn.ncs.ConsentAgreement
@@ -12,6 +12,9 @@ import org.codehaus.groovy.grails.plugins.springsecurity.Secured;
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_STRESS'])
 class LogResultService {
 	def dataSource
+	
+	def authenticateService
+	private static LocalTime midnight = new LocalTime(0,0)
 	
 	static transactional = true
 	
@@ -33,7 +36,7 @@ class LogResultService {
 	    } 
 	        
 	    // if exists, then transact ItemResult data
-	    def received = Result.findByAbbreviation('Rcvd') // is instrument already received?
+	    def received = Result.findByAbbreviation('Rcvd') // is instrument algety received?
 	    //grab received result if logged
 	    def resultLogged = ItemResult.executeQuery("from ItemResult ir WHERE ir.trackedItem = :sid and ir.result.id = :result ",[sid:consentAgreementInstance.sid, result:received?.id])
 	    def resultCode = resultLogged.result
@@ -95,7 +98,7 @@ class LogResultService {
 	} */
 	
 	// logs itemResult for trackedItem
-	def logResult = {trackedItemInstance, responseGroup ->
+	def logResult = {trackedItemInstance, responseGroup, receiptDate ->
 		
 		def message = ''
 		def today = new LocalDate()
@@ -103,11 +106,12 @@ class LogResultService {
 		if (trackedItemInstance){
 
 			// Saving Result
-			if (params.receiptDate && params?.result?.id) {
+			//if (params.receiptDate && params?.result?.id) {
+			if (receiptDate && responseGroup) {
 
 				def username = authenticateService.principal().getUsername()
 				def appName = "consent-entry"
-				def receivedDate = params.receiptDate 
+				def receivedDate = receiptDate 
 				
 				
 				if ( ! receivedDate ) {
@@ -125,14 +129,14 @@ class LogResultService {
 				}
 				
 				// get result object associated with selected response group
-				def result = Result.read(responseGroup.linkedResult)
+				def result = Result.get(responseGroup?.linkedResult?.id)
 				
 				// converting receivedDate from Joda LocalDate to Java Date
 				def javaReceivedDate = receivedDate.toDateTime(midnight).toCalendar().time
 				
 				if(trackedItemInstance.result) {
 					
-					def itemResultInstance = ItemResult.read(trackedItemInstance?.result?.id)
+					def itemResultInstance = ItemResult.get(trackedItemInstance?.result?.id)
 					
 					def jodaOldReceivedDate = new LocalDate(itemResultInstance.receivedDate)
 					
@@ -206,7 +210,7 @@ class LogResultService {
 			}
 			 
 			if (params?.parentItem?.id) {
-				def parentItem = TrackedItem.read(params?.parentItem?.id)
+				def parentItem = TrackedItem.get(params?.parentItem?.id)
 				if (parentItem) {
 					trackedItemInstance.parentItem = parentItem
 				} else {
@@ -251,7 +255,7 @@ class LogResultService {
 		// determine what the linked result for chosen response group is 
 		def responseCode = ConsentAgreementOutcomeResponseCode.findById(params.secondaryResponseCode?.id)
 		def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(responseCode)
-		outcomeCode = Result.read(responseGroup?.linkedResult)
+		outcomeCode = Result.get(responseGroup?.linkedResult)
 		
 		logResult(itemParentInstance, responseGroup)
 		

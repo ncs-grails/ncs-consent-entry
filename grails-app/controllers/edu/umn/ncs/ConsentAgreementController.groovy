@@ -5,6 +5,7 @@ import edu.umn.ncs.ConsentAgreement
 import edu.umn.ncs.ConsentAgreementOtherOutcome
 import edu.umn.ncs.ConsentAgreementOutcomeResponseCode
 import edu.umn.ncs.ConsentAgreementOutcomeResponseCodeGroup
+import edu.umn.ncs.consent.WitnessType
 import edu.umn.ncs.BatchInstrument
 import edu.umn.ncs.ItemResult
 import edu.umn.ncs.TrackedItem
@@ -166,6 +167,9 @@ class ConsentAgreementController {
 		def consentAgreementInstance = new ConsentAgreement(params)
 		// set username
 		consentAgreementInstance.createdByWhom = username
+		
+		def receiptDate = params.receiptDate
+		
         if (debug) {
 			println "username:: ${username}"
             println "ConsentAgreementController:save:consentAgreementInstance.trackedItem::${consentAgreementInstance.trackedItem}"
@@ -187,16 +191,16 @@ class ConsentAgreementController {
 					println "Transact:create:responseGroup?.linkedResult?.id::: ${responseGroup?.linkedResult?.id}"
 					println "Transact:create:params.responseCode?.id ::::${params.responseCode?.id}"
 					println "Transact:create:params.responseGroup ::::${responseGroup}"
-				    println "params.agreementDate::::${params?.agreementDateString}"
+				    println "params.agreementDate::::${params?.agreementDate}"
                 }
 
 				// reformat date
-                if (params?.agreementDateString) {
+                /*if (params?.agreementDateString) {
 					def agreementDate = fmt.parseDateTime(params.agreementDateString).toCalendar().time
                     consentAgreementInstance.agreementDate = agreementDate 
                 } else {
                     consentAgreementInstance.agreementDate = null
-                }
+                }*/
 
 				// TODO: uget redirect with error message working!
                 if (!consentAgreementInstance.agreementDate || consentAgreementInstance.agreementDate > now){
@@ -212,7 +216,7 @@ class ConsentAgreementController {
 
                     consentAgreementInstance.createdWhen = now
 					// if instrument type requires a witness, then grab the type
-					if(consent?.enbleWitness) {
+					if(consent?.enableWitness) {
                         def witnessType = WitnessType.findByName("Study staff") //TODO: get rid of this if possible!
                         consentAgreementInstance.witnessType = witnessType
 						// TODO: get redirect with error message working!
@@ -235,7 +239,6 @@ class ConsentAgreementController {
                     }
                     if (debug) {
                         println "outcomeresponse:create:consentId::::${consent?.id}"
-                        println "outcomeresponse:create:outcomeCode::::${outcomeCode}"
                         println "outcomeresponse:create:params.responseCode?.id ::::${params.responseCode?.id}"
                         println "outcomeresponse:create:params.consentAgreement ::::${consentAgreementInstance}"
                         println "outcomeresponse:create:responseCode::::${responseCode}"
@@ -278,12 +281,12 @@ class ConsentAgreementController {
 					} 
 					
 					// log trackedItem result
-					logResultService.logResult(trackedItemInstance, responseGroup) 
+					logResultService.logResult(consentAgreementInstance, responseGroup, receiptDate) 
 					
 					// TODO: Added parentInstrument to ConsentInstrument; need to fix code below
 					if (consent.childInstrument) {
 						// get linked trackedItem for item 2, and log result for it
-						logResultService.logChildResult(trackedItemInstance, responseGroup)
+						logResultService.logChildResult(consentAgreementInstance, responseGroup, receiptDate)
 					}
 					
 					println "Success saving consent!"
