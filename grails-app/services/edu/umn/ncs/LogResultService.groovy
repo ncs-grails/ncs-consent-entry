@@ -199,8 +199,12 @@ class LogResultService {
 							}
 						}
 					}
+					println "GMS Debug; jodaOldReceivedDate:!!"
 					
 				} else {
+				
+				println "GMS Debug; jodaOldReceivedDate: ${result}"
+				
 					trackedItemInstance.result = new ItemResult(result: result, // need to get 
 						userCreated: username,
 						appCreated: appName,
@@ -209,7 +213,7 @@ class LogResultService {
 				}
 			}
 			 
-			if (params?.parentItem?.id) {
+			/*if (params?.parentItem?.id) {
 				def parentItem = TrackedItem.get(params?.parentItem?.id)
 				if (parentItem) {
 					trackedItemInstance.parentItem = parentItem
@@ -228,19 +232,19 @@ class LogResultService {
 					render(view: "edit", model: [trackedItemInstance: trackedItemInstance])
 					return
 				}
-			}
+			}*/
 			
 			if (!trackedItemInstance.hasErrors() && trackedItemInstance.save(flush: true)) {
 				message += "Item ${trackedItemInstance.id} updated successfully!"
-				render(view: "edit", model: [trackedItemInstance: trackedItemInstance, message: message])
+				//render(view: "edit", model: [trackedItemInstance: trackedItemInstance, message: message])
 			} else {
 				message += "Failed updating Item ${trackedItemInstance.id}!"
-				render (view: "edit", model: [trackedItemInstance: trackedItemInstance, message: message])
+				//render (view: "edit", model: [trackedItemInstance: trackedItemInstance, message: message])
 			}
 			
 		} else {
 			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'trackedItem.label', default: 'Tracked Item'), params.id])}"
-			redirect(controller: "batch", action: "list")
+			//redirect(controller: "batch", action: "list")
 		}
 	}
 		

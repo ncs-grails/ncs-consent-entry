@@ -165,6 +165,7 @@ class ConsentAgreementController {
 		def now = new Date()
 		def username = authenticateService.principal().getUsername()
 		def consentAgreementInstance = new ConsentAgreement(params)
+		def trackedItemInstance = TrackedItem.get(consentAgreementInstance?.trackedItem?.id)
 		// set username
 		consentAgreementInstance.createdByWhom = username
 		
@@ -281,7 +282,7 @@ class ConsentAgreementController {
 					} 
 					
 					// log trackedItem result
-					logResultService.logResult(consentAgreementInstance, responseGroup, receiptDate) 
+					logResultService.logResult(trackedItemInstance, responseGroup, receiptDate) 
 					
 					// TODO: Added parentInstrument to ConsentInstrument; need to fix code below
 					if (consent.childInstrument) {
