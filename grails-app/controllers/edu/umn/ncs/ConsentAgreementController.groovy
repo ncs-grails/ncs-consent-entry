@@ -284,10 +284,42 @@ class ConsentAgreementController {
 					// log trackedItem result
 					logResultService.logResult(trackedItemInstance, responseGroup, receiptDate) 
 					
-					// TODO: Added parentInstrument to ConsentInstrument; need to fix code below
-					if (consent.childInstrument) {
+					def secondaryResponseCode = null
+					def secondaryResponseGroup = null
+					
+					// determine if there is a child instrument
+					
+					def childTrackedItemInstance = TrackedItem?.createCriteria()?.get{
+						parentItem{
+								idEq(consentAgreementInstance?.trackedItem)
+						}
+						maxResults 1
+					}
+					
+					// if child instrument exists then process it as per the secondaryResponseCode
+					if (consent.childInstrument && childTrackedItemInstance) {
+						// determine what the linked result for chosen response group is and use to pass to logResult service
+						secondaryResponseCode = ConsentAgreementOutcomeResponseCode.findById(params.secondaryResponseCode?.id)
+						secondaryResponseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(secondaryResponseCode)
 						// get linked trackedItem for item 2, and log result for it
-						logResultService.logChildResult(consentAgreementInstance, responseGroup, receiptDate)
+						logResultService.logResult(consentAgreementInstance, secondaryResponseGroup, receiptDate)
+						
+						// child ConsentAgreement 
+						def childConsentAgreementInstance = new ConsentAgreement()
+						
+						// copy properties from parent ConsentAgreement
+						// TODO: if separate dates exist then need to add second completion date to create view
+						childConsentAgreementInstance.properties = consentAgreementInstance.properties
+						// update to child TrackedItem record
+						childConsentAgreementInstance?.trackedItem = childTrackedItemInstance.trackedItem
+						
+						if (childConsentAgreementInstance.save(flush:true)) {
+							println "Success creating result: ${childConsentAgreementInstance}"
+						} else {
+							childConsentAgreementInstance.errors.each{ e ->
+								println "ChildConsentAgreementInstance:save:error::${e}"
+							}
+						}
 					}
 					
 					println "Success saving consent!"

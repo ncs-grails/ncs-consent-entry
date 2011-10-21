@@ -113,7 +113,6 @@ class LogResultService {
 				def appName = "consent-entry"
 				def receivedDate = receiptDate 
 				
-				
 				if ( ! receivedDate ) {
 					receivedDate = new LocalDate()
 				} else {
@@ -245,35 +244,6 @@ class LogResultService {
 		} else {
 			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'trackedItem.label', default: 'Tracked Item'), params.id])}"
 			//redirect(controller: "batch", action: "list")
-		}
-	}
-		
-	def logChildResult = { consentAgreementInstance ->
-		
-		def itemParentInstance = ItemParent.findByParentItem(consentAgreementInstance?.trackedItem?.id)
-		def parentTrackedItemInstance = TrackedItem.findById(itemParentInstance?.id)
-								
-		def childOutcomeCode = null
-		
-		def outcomeCode = null
-		// determine what the linked result for chosen response group is 
-		def responseCode = ConsentAgreementOutcomeResponseCode.findById(params.secondaryResponseCode?.id)
-		def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(responseCode)
-		outcomeCode = Result.get(responseGroup?.linkedResult)
-		
-		logResult(itemParentInstance, responseGroup)
-		
-		def childConsentAgreementInstance = new ConsentAgreement()
-		childConsentAgreementInstance.properties = consentAgreementInstance.properties
-			
-		childConsentAgreementInstance.trackedItem = parentTrackedItemInstance
-		
-		if (childConsentAgreementInstance.save(flush:true)) {
-			println "Success creating result: ${childConsentAgreementInstance}"
-		} else {
-			childConsentAgreementInstance.errors.each{ e ->
-				println "ChildConsentAgreementInstance:save:error::${e}"
-			}
 		}
 	}
 	
