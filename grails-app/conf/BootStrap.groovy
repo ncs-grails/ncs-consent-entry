@@ -603,6 +603,8 @@ class BootStrap {
 				}
 			}
 	
+			consent?.childInstrument = consent
+			
 			/*if (consent2.save(flush:true)) {
 				println "Success saving Consent: ${consent2.id}"
 			} else {
