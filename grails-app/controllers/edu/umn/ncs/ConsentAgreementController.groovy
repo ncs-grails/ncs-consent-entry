@@ -291,9 +291,13 @@ class ConsentAgreementController {
 					
 					def childTrackedItemInstance = TrackedItem?.createCriteria()?.get{
 						parentItem{
-								idEq(consentAgreementInstance?.trackedItem)
+								idEq(consentAgreementInstance?.trackedItem?.id)
 						}
 						maxResults 1
+					}
+					
+					if (debug) {
+						println "save:childTrackedItemInstance::::${childTrackedItemInstance}"
 					}
 					
 					// if child instrument exists then process it as per the secondaryResponseCode
@@ -302,7 +306,7 @@ class ConsentAgreementController {
 						secondaryResponseCode = ConsentAgreementOutcomeResponseCode.findById(params.secondaryResponseCode?.id)
 						secondaryResponseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(secondaryResponseCode)
 						// get linked trackedItem for item 2, and log result for it
-						logResultService.logResult(consentAgreementInstance, secondaryResponseGroup, receiptDate)
+						logResultService.logResult(childTrackedItemInstance, secondaryResponseGroup, receiptDate)
 						
 						// child ConsentAgreement 
 						def childConsentAgreementInstance = new ConsentAgreement()
@@ -311,7 +315,7 @@ class ConsentAgreementController {
 						// TODO: if separate dates exist then need to add second completion date to create view
 						childConsentAgreementInstance.properties = consentAgreementInstance.properties
 						// update to child TrackedItem record
-						childConsentAgreementInstance?.trackedItem = childTrackedItemInstance.trackedItem
+						childConsentAgreementInstance?.trackedItem = childTrackedItemInstance
 						
 						if (childConsentAgreementInstance.save(flush:true)) {
 							println "Success creating result: ${childConsentAgreementInstance}"
@@ -323,7 +327,7 @@ class ConsentAgreementController {
 					}
 					
 					println "Success saving consent!"
-                    flash.message = "<br>Result saved as ${outcomeCode}"
+                    //flash.message = "<br>Result saved as ${outcomeCode}"
                     redirect(action: "find")
                 }
                    

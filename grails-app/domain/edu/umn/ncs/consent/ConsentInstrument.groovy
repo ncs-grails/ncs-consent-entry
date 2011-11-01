@@ -10,7 +10,7 @@ class ConsentInstrument {
 
 	// Short name for the consent
 	String name
-	// How long is the consent good for TimeDuration
+	// How long is the consent good for; duration
 	Integer duration
 	// Longer description
 	String description
@@ -40,7 +40,7 @@ class ConsentInstrument {
 	ConsentInstrument childInstrument 
 	Boolean hasChild
 	
-	Boolean hasOtherOutcome // has a disposiition beyond accept/reject
+	Boolean hasOtherOutcome // has a disposition beyond accept/reject
 	
 	Boolean enableWitness // requires a witness to sign instrument
 	// provenance
