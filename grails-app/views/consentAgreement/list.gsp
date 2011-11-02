@@ -10,7 +10,7 @@
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-            <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
+            <span class="menuButton"><g:link class="find" action="find"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
         </div>
         <div class="body">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
@@ -28,11 +28,7 @@
                         
                             <g:sortableColumn property="witnessName" title="${message(code: 'consentAgreement.witnessName.label', default: 'Witness Name')}" />
                         
-                            <th><g:message code="consentAgreement.witnessType.label" default="Witness Type" /></th>
-                        
-                            <g:sortableColumn property="expirationDate" title="${message(code: 'consentAgreement.expirationDate.label', default: 'Expiration Date')}" />
-                        
-                            <th><g:message code="consentAgreement.sid.label" default="Sid" /></th>
+                            <th><g:message code="consentAgreement.trackedItem.label" default="TrackedItem" /></th>
                         
                         </tr>
                     </thead>
@@ -46,20 +42,16 @@
                         
                             <td>${fieldValue(bean: consentAgreementInstance, field: "witnessName")}</td>
                         
-                            <td>${fieldValue(bean: consentAgreementInstance, field: "witnessType")}</td>
-                        
-                            <td><g:formatDate date="${consentAgreementInstance.expirationDate}" /></td>
-                        
-                            <td>${fieldValue(bean: consentAgreementInstance, field: "sid")}</td>
+                            <td>${fieldValue(bean: consentAgreementInstance, field: "trackedItem.id")}</td>
                         
                         </tr>
                     </g:each>
                     </tbody>
                 </table>
             </div>
-            <div class="paginateButtons">
+            <%-- <div class="paginateButtons">
                 <g:paginate total="${consentAgreementInstanceTotal}" />
-            </div>
+            </div> --%>
         </div>
     </body>
 </html>

@@ -26,9 +26,11 @@ class ConsentAgreementController {
     def authenticateService
 	def logResultService
 	
+	
 	def fmt = DateTimeFormat.forPattern("M/d/yyyy");
 
     def index = {
+		
         redirect(action: "find", params: params)
     }
     
@@ -337,17 +339,40 @@ class ConsentAgreementController {
 			}
         }
     }
+	
+	def show = {
+		def consentAgreementInstance  = ConsentAgreement.read( params.id )
 
-    def edit = {
-        def consentAgreementInstance = ConsentAgreement.read(params.id)
-        if (!consentAgreementInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'consentAgreement.label', default: 'ConsentAgreement'), params.id])}"
-            redirect(action: "list")
-        }
-        else {
-            return [consentAgreementInstance: consentAgreementInstance]
-        }
-    }
+		if(!consentAgreementInstance) {
+			flash.message = "Consent not found"
+			redirect(action:list)
+		}
+		else { return [ consentAgreementInstance : consentAgreementInstance ] }
+	}
+	
+	def edit = {
+		def consentAgreementInstance = ConsentAgreement.read(params.id)
+		if (!consentAgreementInstance) {
+			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'consentAgreement.label', default: 'ConsentAgreement'), params.id])}"
+			redirect(action: "list")
+		}
+		else {
+			return [consentAgreementInstance: consentAgreementInstance]
+		}
+	}
+	
+	def list = {
+		def consentAgreementInstanceList = ConsentAgreement.getAll()
+		
+		params.sort = 'agreementDate'
+		params.order = 'desc'
+		
+		if (params.sort) {
+				consentAgreementInstanceList = consentAgreementInstanceList.sort{it[params.sort]}
+		}
+		
+		[consentAgreementInstanceList: consentAgreementInstanceList]
+	}
 
     def update = {
         def consentAgreementInstance = consentAgreement.read(params.id)

@@ -12,7 +12,7 @@
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
             <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></span>
-            <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
+            <span class="menuButton"><g:link class="find" action="find"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
         </div>
         <div class="body">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
@@ -33,93 +33,96 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                  <label for="agreementDate"><g:message code="consentAgreement.agreementDate.label" default="Agreement Date" /></label>
+                                    <label for="receiptDate"><g:message code="consentAgreement.receiptDate.label" default="Receipt Date" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'receiptDate', 'errors')}">
+                                    <g:datePicker name="receiptDate" precision="day" />
+                                </td>
+                            </tr>
+                            
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="agreementDate"><g:message code="consentAgreement.agreementDate.label" default="Agreement Date" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'agreementDate', 'errors')}">
                                     <g:datePicker name="agreementDate" precision="day" value="${consentAgreementInstance?.agreementDate}"  />
                                 </td>
                             </tr>
                         
-                            <tr class="prop">
+                        	<g:if test="${consentAgreementInstance?.consent?.enableWitness}">
+					            <tr class="prop">
+						            	<td valign="top" class="name">
+						              		<label for="witnessName"><g:message code="consentAgreement.witnessName.label" default="Witness Name" /></label>
+						            	</td>
+						            	<td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'witnessName', 'errors')}">
+						            		<g:textField name="witnessName" value="${consentAgreementInstance?.witnessName}" />
+										</td>
+								</tr>
+							 </g:if>
+							  
+                           <%--  <tr class="prop">
                                 <td valign="top" class="name">
-                                  <label for="witnessName"><g:message code="consentAgreement.witnessName.label" default="Witness Name" /></label>
+                                    <label for="trackedItem"><g:message code="consentAgreement.trackedItem.label" default="trackedItem" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'witnessName', 'errors')}">
-                                    <g:textField name="witnessName" value="${consentAgreementInstance?.witnessName}" />
+                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'trackedItem', 'errors')}">
+                                    <g:select name="trackedItem.id" from="${edu.umn.ncs.TrackedItem.list()}" optionKey="id" value="${consentAgreementInstance?.trackedItem?.id}" noSelection="['null': '']" />
                                 </td>
-                            </tr>
-                        
-                            <tr class="prop">
+                            </tr> --%>
+                           
+	                          <tr class="prop">
+					           	<td valign="top" class="name">
+					            	<label for="trackedItem"><g:message code="consentAgreement.trackedItem.label" default="trackedItem ID" /></label>
+					            </td>
+					            <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'trackedItem', 'errors')}">
+								${consentAgreementInstance?.trackedItem?.id}
+					          	</td>
+					         </tr>
+          
+                            <%-- <tr class="prop">
                                 <td valign="top" class="name">
-                                  <label for="witnessType"><g:message code="consentAgreement.witnessType.label" default="Witness Type" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'witnessType', 'errors')}">
-                                    <g:select name="witnessType.id" from="${edu.umn.ncs.consent.WitnessType.list()}" optionKey="id" value="${consentAgreementInstance?.witnessType?.id}" noSelection="['null': '']" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="expirationDate"><g:message code="consentAgreement.expirationDate.label" default="Expiration Date" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'expirationDate', 'errors')}">
-                                    <g:datePicker name="expirationDate" precision="day" value="${consentAgreementInstance?.expirationDate}" default="none" noSelection="['': '']" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="sid"><g:message code="consentAgreement.sid.label" default="Sid" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'sid', 'errors')}">
-                                    <g:select name="sid.id" from="${edu.umn.ncs.TrackedItem.list()}" optionKey="id" value="${consentAgreementInstance?.sid?.id}" noSelection="['null': '']" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="alternatePersonId"><g:message code="consentAgreement.alternatePersonId.label" default="Alternate Person Id" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'alternatePersonId', 'errors')}">
-                                    <g:textField name="alternatePersonId" value="${fieldValue(bean: consentAgreementInstance, field: 'alternatePersonId')}" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="createdByWhom"><g:message code="consentAgreement.createdByWhom.label" default="Created By Whom" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'createdByWhom', 'errors')}">
-                                    <g:textField name="createdByWhom" value="${consentAgreementInstance?.createdByWhom}" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="createdWhen"><g:message code="consentAgreement.createdWhen.label" default="Created When" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'createdWhen', 'errors')}">
-                                    <g:datePicker name="createdWhen" precision="day" value="${consentAgreementInstance?.createdWhen}"  />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="consent"><g:message code="consentAgreement.consent.label" default="Consent" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'consent', 'errors')}">
-                                    <g:select name="consent.id" from="${edu.umn.ncs.consent.ConsentInstrument.list()}" optionKey="id" value="${consentAgreementInstance?.consent?.id}"  />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="person"><g:message code="consentAgreement.person.label" default="Person" /></label>
+                                    <label for="person"><g:message code="consentAgreement.person.label" default="Person" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'person', 'errors')}">
                                     <g:select name="person.id" from="${edu.umn.ncs.Person.list()}" optionKey="id" value="${consentAgreementInstance?.person?.id}"  />
                                 </td>
-                            </tr>
+                            </tr>--%> 
+                        
+                       	 <tr class="prop">
+                       	 
+			            	<td valign="top" class="name">
+			              		<label for="person"><g:message code="consentAgreement.person.label" default="Person" /></label>
+			            	</td>
+			            	<td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'person', 'errors')}">
+								${consentAgreementInstance?.person?.fullName}
+							</td>
+			          	</tr>
+          
+				          <tr class="prop">
+				          	<td valign="top" class="name">
+				          		<label for="response"><g:message code="consentAgreement.response.label" default="Outcome response" /></label>
+				          	</td>
+				          <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'Consent', 'errors')}">
+				          <g:each var="l" in="${consentResponseList}">
+				            <span>
+				              <g:radio name="responseCode.id" value="${l.id}" /> ${l.name}
+				            </span>
+				          </g:each>
+          
+          				</td>
+          				</tr>
+          				 
+						  <g:if test="${consentAgreementInstance?.consent?.hasChild}">
+				          	<tr class="prop">
+				          		<td valign="top" class="name">
+				          			<label for="response"><g:message code="consentAgreement.response.label" default="Outcome response" /></label>
+				          		</td>
+				          	<td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'Consent', 'errors')}">
+				          	<g:each var="ls" in="${consentSecondaryResponseList}">
+				            	<span>
+				              	<g:radio name="secondaryResponseCode.id" value="${ls.id}" /> ${ls.name}
+				            	</span>
+				          	</g:each>
+				          </g:if>
                         
                         </tbody>
                     </table>
