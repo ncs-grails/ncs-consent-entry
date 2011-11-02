@@ -362,7 +362,8 @@ class ConsentAgreementController {
 	}
 	
 	def list = {
-		def consentAgreementInstanceList = ConsentAgreement.getAll()
+		def consent = ConsentInstrument.findByName('Mother consent')
+		def consentAgreementInstanceList = ConsentAgreement.findAllByConsent(consent)
 		
 		params.sort = 'agreementDate'
 		params.order = 'desc'

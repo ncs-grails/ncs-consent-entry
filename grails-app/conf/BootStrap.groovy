@@ -601,7 +601,7 @@ class BootStrap {
 				}
 			}
 			
-			def consent = new ConsentInstrument(name:"To science",description:"Amen!!",instrument:instrument,documentId: 1,duration: 1,createdBy:"gms",enableWitness:true,expirationType:expire,hasChild:true,hasOtherOutcome:false,agreementType:agreement)
+			def consent = new ConsentInstrument(name:"Mother consent",description:"MOM-le study consent",instrument:instrument,documentId: 1,duration: 1,createdBy:"gms",enableWitness:true,expirationType:expire,hasChild:true,hasOtherOutcome:false,agreementType:agreement)
 			//def consent2 = new ConsentInstrument(name:"SIT Mother",description:"Study consent",batchInstrument:batchInstrument,documentId: 2,duration: 1,createdBy:"gms",enableWitness:true,expirationType:expire,hasChild:true,hasOtherOutcome:true,agreementType:agreement)
 			//def consent3 = new ConsentInstrument(name:"SIT HIPAA",description:"HIPAA consent",batchInstrument:batchInstrument,documentId: 2,duration: 1,createdBy:"gms",enableWitness:true,expirationType:expire,hasChild:true,hasOtherOutcome:true,agreementType:agreement)
 			//def consent4 = new ConsentInstrument(name:"PPS4 Kidney",description:"HIPAA consent",batchInstrument:batchInstrument,documentId: 2,duration: 1,createdBy:"gms",enableWitness:true,expirationType:expire,hasChild:true,hasOtherOutcome:true,agreementType:agreement)
