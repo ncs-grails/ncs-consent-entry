@@ -581,7 +581,7 @@ class BootStrap {
 				}
 			}
 			
-			def witness = new WitnessType(name: "Separate")
+			def witness = new WitnessType(name: "Study staff")
 			
 			if (witness.save(flush:true)) {
 				println "Success saving WitnessType: ${witness}"
