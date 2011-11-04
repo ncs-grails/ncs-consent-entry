@@ -111,9 +111,19 @@
           				</td>
           				</tr>
           				
-                         <!-- replace with consentId -->
-				         
-						  <g:if test="${consentAgreementInstance?.consent?.hasChild}">
+          				  <g:if test="${consentAgreementInstance?.consent?.hasChild}">
+          				  
+          				  	<g:if test="${consentAgreementInstance?.consent?.hasOtherAgreementDate}">
+	          				   <tr class="prop">
+	                                <td valign="top" class="name">
+	                                    <label for="agreementDate"><g:message code="consentAgreement.agreementDate.label" default="Agreement Date" /></label>
+	                                </td>
+	                                <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'agreementDate', 'errors')}">
+	                                    <g:datePicker name="secondaryAgreementDate" precision="day" value="${consentAgreementInstance?.agreementDate}"  />
+	                                </td>
+	                            </tr>
+	                        </g:if>
+	                            
 				          	<tr class="prop">
 				          		<td valign="top" class="name">
 				          			<label for="response"><g:message code="consentAgreement.response.label" default="Outcome response" /></label>

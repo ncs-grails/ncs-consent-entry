@@ -299,10 +299,17 @@ class ConsentAgreementController {
 						// child ConsentAgreement 
 						def childConsentAgreementInstance = new ConsentAgreement()
 						// copy properties from parent ConsentAgreement
+												
 						// TODO: if separate dates exist then need to add second completion date to create view
 						childConsentAgreementInstance.properties = consentAgreementInstance.properties
 						// update to child TrackedItem record
 						childConsentAgreementInstance?.trackedItem = childTrackedItemInstance
+						
+						// multiple dates?
+						if (consentInstrumentInstance?.hasOtherAgreementDate) {
+							childConsentAgreementInstance?.agreementDate = params.secondaryAgreementDate
+								
+						}
 						
 						if (childConsentAgreementInstance.save(flush:true)) {
 							println "Success creating result: ${childConsentAgreementInstance}"
@@ -401,6 +408,7 @@ class ConsentAgreementController {
 				println "consentSecondaryAgreementInstance::::${consentSecondaryAgreementInstance}"
 				println "consentInstrumentSecondaryInstance::::${consentInstrumentSecondaryInstance}"
 			}
+							
 			// get response list and selected disposition from logged trackedItem result of child ConsentAgreement
 			consentSecondaryResponseList = ConsentAgreementOutcomeResponseCodeGroup.findAllByConsent(consentInstrumentSecondaryInstance)
 			secondaryOutcomeResponse = consentSecondaryResponseList.find{it.linkedResult.id == consentSecondaryAgreementInstance?.trackedItem?.result?.result?.id}
@@ -459,7 +467,7 @@ class ConsentAgreementController {
 			
 			// determine what the linked result for chosen response group is and use to pass to logResult service
 			def responseCode = ConsentAgreementOutcomeResponseCode.findById(outcomeResponse)
-			def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(responseCode)
+			def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(params.responseCode?.id)
 			
 			// log trackedItem result
 			logResultService.logResult(trackedItemInstance, responseGroup, receiptDate)
@@ -486,7 +494,7 @@ class ConsentAgreementController {
 			if (consent.childInstrument && childTrackedItemInstance) {
 				// determine what the linked result for chosen response group is and use to pass to logResult service
 				secondaryResponseCode = ConsentAgreementOutcomeResponseCode.findById(secondaryOutcomeResponse)
-				secondaryResponseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(secondaryResponseCode)
+				secondaryResponseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(params.secondaryResponseCode?.id)
 				// get linked trackedItem for item 2, and log result for it
 				logResultService.logResult(childTrackedItemInstance, secondaryResponseGroup, receiptDate)
 				// child ConsentAgreement
@@ -496,6 +504,12 @@ class ConsentAgreementController {
 				childConsentAgreementInstance.properties = consentAgreementInstance.properties
 				// update to child TrackedItem record
 				childConsentAgreementInstance?.trackedItem = childTrackedItemInstance
+				
+				// multiple dates?
+				if (consentInstrumentInstance?.hasOtherAgreementDate) {
+					childConsentAgreementInstance?.agreementDate = params.secondaryAgreementDate
+						
+				}
 				
 				if (childConsentAgreementInstance.save(flush:true)) {
 					println "Success creating result: ${childConsentAgreementInstance}"

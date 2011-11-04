@@ -38,10 +38,12 @@ class ConsentInstrument {
 	AgreementType agreementType
 	
 	ConsentInstrument childInstrument 
-	Boolean hasChild
+	Boolean hasChild // multiple items for consenting party for which to agree
+	
+	Boolean hasOtherAgreementDate = false// for child instrument is there a separate date
 	
 	Boolean hasOtherOutcome // has a disposition beyond accept/reject
-	
+		
 	Boolean enableWitness // requires a witness to sign instrument
 	// provenance
 	Date dateCreated
