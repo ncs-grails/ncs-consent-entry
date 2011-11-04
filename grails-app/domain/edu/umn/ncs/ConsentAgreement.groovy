@@ -15,7 +15,6 @@ class ConsentAgreement {
 
 	// Date of the agreement
 	Date agreementDate
-
 	// Witness name and type
 	String witnessName
 	WitnessType witnessType

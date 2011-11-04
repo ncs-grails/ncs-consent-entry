@@ -1,10 +1,11 @@
 
 
 <%@ page import="edu.umn.ncs.ConsentAgreement" %>
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="main" />
+        <meta name="layout" content="ncs" />
         <g:set var="entityName" value="${message(code: 'consentAgreement.label', default: 'ConsentAgreement')}" />
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
     </head>
@@ -104,7 +105,9 @@
 				          <td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'Consent', 'errors')}">
 				          <g:each var="l" in="${consentResponseList}">
 				            <span>
-				              <g:radio name="responseCode.id" value="${l.id}" /> ${l.name}
+				              <g:if test="${outcomeResponse.id == l.outcomeResponseCode.id }">  <g:radio name="responseCode.id" value="${l.id}" checked="checked"/> </g:if>
+				              <g:else>  <g:radio name="responseCode.id" value="${l.id}"/> </g:else>
+				             ${l.outcomeResponseCode} 
 				            </span>
 				          </g:each>
           
@@ -119,7 +122,11 @@
 				          	<td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'Consent', 'errors')}">
 				          	<g:each var="ls" in="${consentSecondaryResponseList}">
 				            	<span>
-				              	<g:radio name="secondaryResponseCode.id" value="${ls.id}" /> ${ls.name}
+				            		<g:if test="${secondaryOutcomeResponse.id == ls.outcomeResponseCode.id }">  <g:radio name="secondaryResponseCode.id" value="${ls.id}" checked="checked"/> </g:if>
+				              		<g:else>  <g:radio name="secondaryResponseCode.id" value="${ls.id}"/> </g:else>
+				              		${ls.outcomeResponseCode}
+				              
+				              	<%-- <g:radio name="secondaryResponseCode.id" value="${ls.id}" /> ${ls} --%>
 				            	</span>
 				          	</g:each>
 				          </g:if>

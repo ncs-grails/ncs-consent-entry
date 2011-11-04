@@ -177,13 +177,11 @@ class ConsentAgreementController {
 			println "username:: ${username}"
             println "ConsentAgreementController:save:consentAgreementInstance.trackedItem::${consentAgreementInstance.trackedItem}"
             println "ConsentAgreementController:save:params::${params}"
-            println "trackedItemInstance:save:params::${consentAgreementInstance.trackedItem}"
-			println "consentAgreementInstance.properties:save:::${consentAgreementInstance.properties}"
         }
 		// instance exists so let's process it
         if (consentAgreementInstance) {
-			//def itemResult = ItemResult.findByTrackedItem(consentAgreementInstance?.trackedItem)
 			
+			// valid response given so process
             if (params.responseCode?.id) { //} && resultLogged){
                 
 				// determine what the linked result for chosen response group is and use to pass to logResult service
@@ -197,15 +195,7 @@ class ConsentAgreementController {
 				    println "params.agreementDate::::${params?.agreementDate}"
                 }
 
-				// reformat date
-                /*if (params?.agreementDateString) {
-					def agreementDate = fmt.parseDateTime(params.agreementDateString).toCalendar().time
-                    consentAgreementInstance.agreementDate = agreementDate 
-                } else {
-                    consentAgreementInstance.agreementDate = null
-                }*/
-
-				// TODO: uget redirect with error message working!
+				// TODO: get redirect with error message working!
                 if (!consentAgreementInstance.agreementDate || consentAgreementInstance.agreementDate > now){
                     //flash.message = "<br>Invalid Agreement Date ${consentAgreementInstance.agreementDate}"
                     //redirect(action: "find", id: consentAgreementInstance.id)
@@ -220,7 +210,7 @@ class ConsentAgreementController {
                     consentAgreementInstance.createdWhen = now
 					// if instrument type requires a witness, then grab the type
 					if(consent?.enableWitness) {
-                        def witnessType = WitnessType.findByName("Study staff") //TODO: get rid of this if possible!
+                        def witnessType = WitnessType.findByName("Study staff")
                         consentAgreementInstance.witnessType = witnessType
 						// TODO: get redirect with error message working!
                         if (!consentAgreementInstance.witnessName){
@@ -262,8 +252,7 @@ class ConsentAgreementController {
                             }
                         }
                     }
-					//def deadLogged = ItemResult.executeQuery("from ItemResult ir WHERE ir.trackedItem = :trackedItem and ir.result.id = :result ",[trackedItem:consentAgreementInstance.trackedItem, result:dead?.id])
-					// redo as createCriteria
+					
 					// see if result logged as dead
 					def dead = Result.findByAbbreviation('Dead')
 					def deadLogged = ItemResult?.createCriteria()?.get{
@@ -278,8 +267,7 @@ class ConsentAgreementController {
 							maxResults 1
 						}
 					// if a ConsentAgreement was not found then go to entry form
-					if (deadLogged) {
-						// do nothing
+					if (deadLogged) { // do nothing
 						redirect(action: "find", params:[errorMessage:">Consent logged as dead",id: consentAgreementInstance.id])
 					} 
 					
@@ -290,7 +278,6 @@ class ConsentAgreementController {
 					def secondaryResponseGroup = null
 					
 					// determine if there is a child instrument
-					
 					def childTrackedItemInstance = TrackedItem?.createCriteria()?.get{
 						parentItem{
 								idEq(consentAgreementInstance?.trackedItem?.id)
@@ -309,10 +296,8 @@ class ConsentAgreementController {
 						secondaryResponseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(secondaryResponseCode)
 						// get linked trackedItem for item 2, and log result for it
 						logResultService.logResult(childTrackedItemInstance, secondaryResponseGroup, receiptDate)
-						
 						// child ConsentAgreement 
 						def childConsentAgreementInstance = new ConsentAgreement()
-						
 						// copy properties from parent ConsentAgreement
 						// TODO: if separate dates exist then need to add second completion date to create view
 						childConsentAgreementInstance.properties = consentAgreementInstance.properties
@@ -327,12 +312,10 @@ class ConsentAgreementController {
 							}
 						}
 					}
-					
 					println "Success saving consent!"
                     //flash.message = "<br>Result saved as ${outcomeCode}"
                     redirect(action: "find")
                 }
-                   
             } else {
 				flash.message = "<br>Need result for item"
 					redirect(action: "find")
@@ -352,12 +335,78 @@ class ConsentAgreementController {
 	
 	def edit = {
 		def consentAgreementInstance = ConsentAgreement.read(params.id)
+		def trackedItemInstance =  consentAgreementInstance?.trackedItem
+		def instrumentInstance = trackedItemInstance?.batch?.primaryInstrument
+		def consentInstrumentInstance = ConsentInstrument.findByInstrument(instrumentInstance)
+		consentAgreementInstance.consent = consentInstrumentInstance
+		
+		if (debug) {
+			println "consentInstrumentInstance:c:::${consentInstrumentInstance}"
+			println "consentAgreementInstance.consent:c:::${consentAgreementInstance.consent}"
+			println "consentAgreementInstance?.trackedItem?.result?.result?.id:c:::${consentAgreementInstance?.trackedItem?.result?.result?.id}"
+		}
+					
+		//def consentInstrumentInstance = ConsentInstrument.findByEventCode(batchEventInstance?.id)
+		
+		// get the disposition codes for display in create view
+		def consentResponseList = ConsentAgreementOutcomeResponseCodeGroup.findAllByConsent(consentInstrumentInstance)
+		
+		if (debug) {
+			println "consentResponseList::::${consentResponseList}"
+		}
+		
+		def outcomeResponse = null
+		def secondaryOutcomeResponse = null
+		
+		def childTrackedItemInstance = TrackedItem?.createCriteria()?.get{
+			parentItem{
+					idEq(consentAgreementInstance?.trackedItem?.id)
+			}
+			maxResults 1
+		}
+		
+		if (debug) {
+			println "childTrackedItemInstance::::${childTrackedItemInstance}"
+			println "(params.id): ${params.id}"
+			
+		}
+		
+		def consentSecondaryResponseList = null
+		def consentSecondaryAgreementInstance = null
+		// get response list for child consent agreement items if they exist
+		if (consentInstrumentInstance?.hasChild){
+			consentSecondaryAgreementInstance = ConsentAgreement.findByTrackedItem(childTrackedItemInstance)
+			def consentInstrumentSecondaryInstance = ConsentInstrument.findByChildInstrument(consentInstrumentInstance?.childInstrument)
+			
+			if (debug) {
+				println "consentSecondaryAgreementInstance::::${consentSecondaryAgreementInstance}"
+				println "consentInstrumentSecondaryInstance::::${consentInstrumentSecondaryInstance}"
+			}
+			
+			consentSecondaryResponseList = ConsentAgreementOutcomeResponseCodeGroup.findAllByConsent(consentInstrumentSecondaryInstance)
+			secondaryOutcomeResponse = consentSecondaryResponseList.find{it.linkedResult.id == consentSecondaryAgreementInstance?.trackedItem?.result?.result?.id}
+			
+			if (debug) {
+				println "consentSecondaryResponseList::::${consentSecondaryResponseList}"
+				println "secondaryOutComeResponse::::${secondaryOutcomeResponse}"
+			}
+		}
+		
 		if (!consentAgreementInstance) {
 			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'consentAgreement.label', default: 'ConsentAgreement'), params.id])}"
 			redirect(action: "list")
 		}
 		else {
-			return [consentAgreementInstance: consentAgreementInstance]
+			//def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findAllByLinkedResult(consentAgreementInstance?.trackedItem?.result?.result)
+			outcomeResponse = consentResponseList.find{it.linkedResult.id == consentAgreementInstance?.trackedItem?.result?.result?.id}
+			if (debug) {
+				println "outcomeResponse::::${outcomeResponse}"
+			}
+			return [consentAgreementInstance: consentAgreementInstance,
+					consentResponseList: consentResponseList, 
+					consentSecondaryResponseList: consentSecondaryResponseList,
+					outcomeResponse: outcomeResponse,
+					secondaryOutcomeResponse: secondaryOutcomeResponse]
 		}
 	}
 	
@@ -376,10 +425,10 @@ class ConsentAgreementController {
 	}
 
     def update = {
-        def consentAgreementInstance = consentAgreement.read(params.id)
+        def consentAgreementInstance = ConsentAgreement.read(params.id)
 
-        def username = authenticateService?.principal()?.readUsername()
-        consentAgreementInstance.userUpdated = username
+        //def username = authenticateService.principal().username
+        //consentAgreementInstance.userUpdated = username
         // I think this is optional
         //consentAgreementInstance.lastUpdated = new Date()
 
