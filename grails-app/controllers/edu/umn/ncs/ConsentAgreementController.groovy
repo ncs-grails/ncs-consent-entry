@@ -333,13 +333,30 @@ class ConsentAgreementController {
 		else { return [ consentAgreementInstance : consentAgreementInstance ] }
 	}
 	
-	def edit = {
-		def consentAgreementInstance = ConsentAgreement.read(params.id)
-		def trackedItemInstance =  consentAgreementInstance?.trackedItem
-		def instrumentInstance = trackedItemInstance?.batch?.primaryInstrument
-		def consentInstrumentInstance = ConsentInstrument.findByInstrument(instrumentInstance)
-		consentAgreementInstance.consent = consentInstrumentInstance
+	def list = {
+		def consent = ConsentInstrument.findByName('Mother consent')
+		def consentAgreementInstanceList = ConsentAgreement.findAllByConsent(consent)
 		
+		params.sort = 'agreementDate'
+		params.order = 'desc'
+		
+		if (params.sort) {
+				consentAgreementInstanceList = consentAgreementInstanceList.sort{it[params.sort]}
+		}
+		
+		[consentAgreementInstanceList: consentAgreementInstanceList]
+	}
+	
+	def edit = {
+		// get desired ConsentAgreement for edit
+		def consentAgreementInstance = ConsentAgreement.read(params.id)
+		// get trackedItem for ConsentAgreement
+		def trackedItemInstance =  consentAgreementInstance?.trackedItem
+		// get instrument for ConsentAgreement
+		def instrumentInstance = trackedItemInstance?.batch?.primaryInstrument
+		// get consent by instrument for ConsentAgreement
+		def consentInstrumentInstance = ConsentInstrument.findByInstrument(instrumentInstance)
+				
 		if (debug) {
 			println "consentInstrumentInstance:c:::${consentInstrumentInstance}"
 			println "consentAgreementInstance.consent:c:::${consentAgreementInstance.consent}"
@@ -348,7 +365,7 @@ class ConsentAgreementController {
 					
 		//def consentInstrumentInstance = ConsentInstrument.findByEventCode(batchEventInstance?.id)
 		
-		// get the disposition codes for display in create view
+		// get the disposition codes for display in edit view
 		def consentResponseList = ConsentAgreementOutcomeResponseCodeGroup.findAllByConsent(consentInstrumentInstance)
 		
 		if (debug) {
@@ -358,6 +375,7 @@ class ConsentAgreementController {
 		def outcomeResponse = null
 		def secondaryOutcomeResponse = null
 		
+		// get childInstrument associated with trackedItem for ConsentAgreement
 		def childTrackedItemInstance = TrackedItem?.createCriteria()?.get{
 			parentItem{
 					idEq(consentAgreementInstance?.trackedItem?.id)
@@ -373,16 +391,18 @@ class ConsentAgreementController {
 		
 		def consentSecondaryResponseList = null
 		def consentSecondaryAgreementInstance = null
-		// get response list for child consent agreement items if they exist
-		if (consentInstrumentInstance?.hasChild){
+		// get response list and selected disposition from list for child consent agreement items if they exist
+		if (consentInstrumentInstance?.hasChild && childTrackedItemInstance){
+			// get child ConsentAgreement
 			consentSecondaryAgreementInstance = ConsentAgreement.findByTrackedItem(childTrackedItemInstance)
+			// get instrument of child ConsentAgreement
 			def consentInstrumentSecondaryInstance = ConsentInstrument.findByChildInstrument(consentInstrumentInstance?.childInstrument)
 			
 			if (debug) {
 				println "consentSecondaryAgreementInstance::::${consentSecondaryAgreementInstance}"
 				println "consentInstrumentSecondaryInstance::::${consentInstrumentSecondaryInstance}"
 			}
-			
+			// get response list and selected disposition from logged trackedItem result of child ConsentAgreement
 			consentSecondaryResponseList = ConsentAgreementOutcomeResponseCodeGroup.findAllByConsent(consentInstrumentSecondaryInstance)
 			secondaryOutcomeResponse = consentSecondaryResponseList.find{it.linkedResult.id == consentSecondaryAgreementInstance?.trackedItem?.result?.result?.id}
 			
@@ -397,7 +417,7 @@ class ConsentAgreementController {
 			redirect(action: "list")
 		}
 		else {
-			//def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findAllByLinkedResult(consentAgreementInstance?.trackedItem?.result?.result)
+			// get response list and selected disposition from logged trackedItem result of ConsentAgreement
 			outcomeResponse = consentResponseList.find{it.linkedResult.id == consentAgreementInstance?.trackedItem?.result?.result?.id}
 			if (debug) {
 				println "outcomeResponse::::${outcomeResponse}"
@@ -410,21 +430,7 @@ class ConsentAgreementController {
 		}
 	}
 	
-	def list = {
-		def consent = ConsentInstrument.findByName('Mother consent')
-		def consentAgreementInstanceList = ConsentAgreement.findAllByConsent(consent)
-		
-		params.sort = 'agreementDate'
-		params.order = 'desc'
-		
-		if (params.sort) {
-				consentAgreementInstanceList = consentAgreementInstanceList.sort{it[params.sort]}
-		}
-		
-		[consentAgreementInstanceList: consentAgreementInstanceList]
-	}
-
-    def update = {
+	def update = {
         def consentAgreementInstance = ConsentAgreement.read(params.id)
 
         //def username = authenticateService.principal().username
