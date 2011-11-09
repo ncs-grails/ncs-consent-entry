@@ -59,6 +59,15 @@
 						            		<g:textField name="witnessName" value="${consentAgreementInstance?.witnessName}" />
 										</td>
 								</tr>
+								<tr class="prop">
+										<td valign="top" class="name">
+						              		<label for="witnessType"><g:message code="consentAgreement.witnessType.label" default="Witness Type" /></label>
+						            	</td>
+						            	
+						            	<td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'withnessType', 'errors')}">
+                                    		<g:select name="withnessType.id" from="${edu.umn.ncs.consent.WitnessType.list()}" optionKey="id" value="${consentAgreementInstance?.witnessType?.id}"  />
+                                		</td>
+                                </tr>
 							 </g:if>
 							
 							 <tr class="prop">
@@ -136,3 +145,4 @@
         </div>
     </body>
 </html>
+

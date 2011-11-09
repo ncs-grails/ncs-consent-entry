@@ -208,11 +208,8 @@ class ConsentAgreementController {
 					}
 
                     consentAgreementInstance.createdWhen = now
-					// if instrument type requires a witness, then grab the type
+					// if instrument type requires a witness, check that it is provided
 					if(consent?.enableWitness) {
-                        def witnessType = WitnessType.findByName("Study staff")
-                        consentAgreementInstance.witnessType = witnessType
-						// TODO: get redirect with error message working!
                         if (!consentAgreementInstance.witnessName){
 							//flash.message = "<br>>You must enter the name of the witness"
 							//redirect(action: "find", id: consentAgreementInstance.id)
@@ -306,7 +303,7 @@ class ConsentAgreementController {
 						childConsentAgreementInstance?.trackedItem = childTrackedItemInstance
 						
 						// multiple dates?
-						if (consentInstrumentInstance?.hasOtherAgreementDate) {
+						if (consentAgreementInstance?.consent?.hasOtherAgreementDate) {
 							childConsentAgreementInstance?.agreementDate = params.secondaryAgreementDate
 								
 						}
@@ -528,3 +525,4 @@ class ConsentAgreementController {
     }
    
 }
+
