@@ -463,7 +463,7 @@ class ConsentAgreementController {
             }
 			
 			// determine what the linked result for chosen response group is and use to pass to logResult service
-			def responseCode = ConsentAgreementOutcomeResponseCode.findById(outcomeResponse)
+			def responseCode = ConsentAgreementOutcomeResponseCode.findById(params.responseCode?.id)
 			def responseGroup = ConsentAgreementOutcomeResponseCodeGroup.findByOutcomeResponseCode(params.responseCode?.id)
 			
 			// log trackedItem result

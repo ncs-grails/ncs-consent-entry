@@ -2,5 +2,5 @@ package edu.umn.ncs
 
 class ConsentAgreementOutcomeResponseCodeGroupController {
 
-    def scaffold = ConsentAgreementOutcomeResponseCode
+    def scaffold = ConsentAgreementOutcomeResponseCodeGroup
 }

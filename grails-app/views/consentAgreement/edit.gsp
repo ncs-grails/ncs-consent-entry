@@ -65,7 +65,7 @@
 						            	</td>
 						            	
 						            	<td valign="top" class="value ${hasErrors(bean: consentAgreementInstance, field: 'withnessType', 'errors')}">
-                                    		<g:select name="withnessType.id" from="${edu.umn.ncs.consent.WitnessType.list()}" optionKey="id" value="${consentAgreementInstance?.witnessType?.id}"  />
+                                    		<g:select name="witnessType.id" from="${edu.umn.ncs.consent.WitnessType.list()}" optionKey="id" value="${consentAgreementInstance?.witnessType?.id}"  />
                                 		</td>
                                 </tr>
 							 </g:if>

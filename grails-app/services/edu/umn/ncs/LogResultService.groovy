@@ -102,16 +102,25 @@ class LogResultService {
 		
 		def message = ''
 		def today = new LocalDate()
+		def result = null
+		def itemResultInstance = null
 		
 		if (trackedItemInstance){
 
 			// Saving Result
 			//if (params.receiptDate && params?.result?.id) {
-			if (receiptDate && responseGroup) {
+			
+			if (responseGroup) {
 
 				def username = authenticateService.principal().getUsername()
 				def appName = "consent-entry"
 				def receivedDate = receiptDate 
+				
+				// get result object associated with selected response group
+				result = Result.read(responseGroup?.linkedResult?.id)
+				
+				println "GMS Debug; result: ${result}"
+				println "GMS Debug; trackedItemInstance: ${trackedItemInstance}"
 				
 				if ( ! receivedDate ) {
 					receivedDate = new LocalDate()
@@ -127,15 +136,12 @@ class LogResultService {
 						return
 				}
 				
-				// get result object associated with selected response group
-				def result = Result.get(responseGroup?.linkedResult?.id)
-				
 				// converting receivedDate from Joda LocalDate to Java Date
 				def javaReceivedDate = receivedDate.toDateTime(midnight).toCalendar().time
 				
 				if(trackedItemInstance.result) {
 					
-					def itemResultInstance = ItemResult.get(trackedItemInstance?.result?.id)
+					itemResultInstance = ItemResult.get(trackedItemInstance?.result?.id)
 					
 					def jodaOldReceivedDate = new LocalDate(itemResultInstance.receivedDate)
 					
@@ -202,8 +208,9 @@ class LogResultService {
 					
 				} else {
 				
-				println "GMS Debug; jodaOldReceivedDate: ${result}"
-				
+					println "GMS Debug; result: ${result}"
+					println "GMS Debug; itemResultInstance: ${itemResultInstance}"
+					
 					trackedItemInstance.result = new ItemResult(result: result, // need to get 
 						userCreated: username,
 						appCreated: appName,
@@ -211,27 +218,6 @@ class LogResultService {
 						trackedItem: trackedItemInstance)
 				}
 			}
-			 
-			/*if (params?.parentItem?.id) {
-				def parentItem = TrackedItem.get(params?.parentItem?.id)
-				if (parentItem) {
-					trackedItemInstance.parentItem = parentItem
-				} else {
-					trackedItemInstance.errors.rejectValue("parentItem", "trackedItem.parentItem.notFound", [message(code: 'trackedItem.label', default: 'trackedItem')] as Object[], "Parent tracked item for entered parent item ID not found.")
-					render(view: "edit", model: [trackedItemInstance: trackedItemInstance])
-					return
-				}
-			}
-			
-			if (params.version) {
-				def version = params.version.toLong()
-				if (trackedItemInstance.version > version) {
-
-					trackedItemInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'trackedItem.label', default: 'trackedItem')] as Object[], "Another user has updated this Batch while you were editing")
-					render(view: "edit", model: [trackedItemInstance: trackedItemInstance])
-					return
-				}
-			}*/
 			
 			if (!trackedItemInstance.hasErrors() && trackedItemInstance.save(flush: true)) {
 				message += "Item ${trackedItemInstance.id} updated successfully!"
