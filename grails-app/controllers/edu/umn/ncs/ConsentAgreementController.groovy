@@ -13,7 +13,7 @@ import edu.umn.ncs.Result
 import edu.umn.ncs.consent.ConsentInstrument
 import org.joda.time.format.DateTimeFormat
 
-// Let's us use security annotations
+// Let's use security annotations
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_STRESS'])
@@ -63,38 +63,43 @@ class ConsentAgreementController {
 			// Figure out instrument type of TrackedItem
 			def instrumentInstance = trackedItemInstance?.batch?.primaryInstrument
 			
-			// look for any ConsentAgreement with the instrument associated with that trackedItem for that person
-			def consentAgreementInstance = ConsentAgreement?.createCriteria()?.get{
-				trackedItem{
-					and{
-						person{
-							idEq(personInstance?.id)
-						}
-						batch{
-							instruments{
-								instrument{
-									idEq(instrumentInstance?.id)
+			// if instrument exists then proceed
+			if (instrumentInstance ){
+				// look for any ConsentAgreement with the instrument associated with that trackedItem for that person
+				def consentAgreementInstance = ConsentAgreement?.createCriteria()?.get{
+					trackedItem{
+						and{
+							person{
+								idEq(personInstance?.id)
+							}
+							batch{
+								instruments{
+									instrument{
+										idEq(instrumentInstance?.id)
+									}
 								}
 							}
 						}
 					}
+					maxResults 1
 				}
-				maxResults 1
-			}
-			// if a ConsentAgreement was not found then go to entry form
-			if (!consentAgreementInstance) {
-				// we're golden
-				println "Go to view!"
-				return [ trackedItemInstance: trackedItemInstance,
-					instrumentInstance: instrumentInstance,
-					consentAgreementInstance: consentAgreementInstance]
+				// if a ConsentAgreement was not found then go to entry form
+				if (!consentAgreementInstance) {
+					// we're golden
+					println "Go to view!"
+					return [ trackedItemInstance: trackedItemInstance,
+						instrumentInstance: instrumentInstance,
+						consentAgreementInstance: consentAgreementInstance]
+				}
+				else {
+					flash.message = "Tracked Item ID for consent already logged! ${params?.id}"
+				}
 			}
 			else {
-				flash.message = "Tracked Item ID for consent already logged! ${params?.id}"
+				flash.message = "Error!! Ill-formed tracked item!! ${params?.id}"
 			}
-			
 		} 
-	
+		
     }
    
     def create = {
@@ -317,7 +322,10 @@ class ConsentAgreementController {
 						}
 					}
 					println "Success saving consent!"
-                    //flash.message = "<br>Result saved as ${outcomeCode}"
+                    flash.message = "<br>${consentAgreementInstance?.consent?.name} Result saved as ${consentAgreementInstance?.trackedItem?.result?.result?.name}"
+					if (consent.childInstrument && childTrackedItemInstance) {
+						flash.message = "<br>${childConsentAgreementInstance?.consent?.name} Result saved as ${childConsentAgreementInstance?.trackedItem?.result?.result?.name}"
+					}
                     redirect(action: "find")
                 }
             } else {
@@ -338,6 +346,7 @@ class ConsentAgreementController {
 	}
 	
 	def list = {
+		// filter out which types of consents get listed
 		def consent = ConsentInstrument.findByName('Mother consent')
 		def consentAgreementInstanceList = ConsentAgreement.findAllByConsent(consent)
 		

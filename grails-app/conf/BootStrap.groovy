@@ -96,7 +96,7 @@ class BootStrap {
             mother = new RelationshipType(name:'mother').save()
         }
         //Study
-        def ncs = Study.findByName("NCS")
+        /*def ncs = Study.findByName("NCS")
         if (! ncs) {
             ncs = new Study(name:"NCS",
                 fullName:"National Children's Study",
@@ -110,10 +110,10 @@ class BootStrap {
                     println "${it}"
                 }
             }
-        }
+        }*/
 		
 		//Study
-		def momle = Study.findByName("MOMle")
+		/*def momle = Study.findByName("MOMle")
 		if (! momle) {
 			momle = new Study(name:"MOMle",
 				fullName:"Measurement of Maternal Life Experience",
@@ -127,7 +127,7 @@ class BootStrap {
 					println "${it}"
 				}
 			}
-		}
+		}*/
 
         /*** Tracking Section ***/
         /* Items: BatchDirection, InstrumentFormat, IsInitial, Result
@@ -426,11 +426,12 @@ class BootStrap {
                     gender:female,
                     alive:true,
                     isRecruitable:false,
-                    appCreated:'byHand').save()
+					appCreated:'byHand').save()
 
                     bstewardRecipient = new TrackingDocumentRecipient(person: bsteward, address:mtc).save()
             }
-
+			
+			
             def dmd = Person.findByFirstNameAndLastName('Donna', 'DesMarais')
             def dmdRecipient
             if ( ! dmd ) {
@@ -441,7 +442,7 @@ class BootStrap {
                     gender:female,
                     alive:true,
                     isRecruitable:false,
-                    appCreated:'byHand').save()
+					appCreated:'byHand').save()
 
                 dmdRecipient = new TrackingDocumentRecipient(person: dmd, address:mac).save()
             }
@@ -455,7 +456,7 @@ class BootStrap {
                     suffix:null,
                     gender:null,
                     alive:true,
-                    isRecruitable:false,
+					isRecruitable:false,
                     appCreated:'byHand').save()
 
                 sdRecipient = new TrackingDocumentRecipient(person: sd, address:mac).save()
