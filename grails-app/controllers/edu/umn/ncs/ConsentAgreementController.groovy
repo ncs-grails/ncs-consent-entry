@@ -291,6 +291,8 @@ class ConsentAgreementController {
 						println "save:childTrackedItemInstance::::${childTrackedItemInstance}"
 					}
 					
+					def childConsentAgreementInstance = null
+					
 					// if child instrument exists then process it as per the secondaryResponseCode
 					if (consent.childInstrument && childTrackedItemInstance) {
 						// determine what the linked result for chosen response group is and use to pass to logResult service
@@ -299,7 +301,7 @@ class ConsentAgreementController {
 						// get linked trackedItem for item 2, and log result for it
 						logResultService.logResult(childTrackedItemInstance, secondaryResponseGroup, receiptDate)
 						// child ConsentAgreement 
-						def childConsentAgreementInstance = new ConsentAgreement()
+						childConsentAgreementInstance = new ConsentAgreement()
 						// copy properties from parent ConsentAgreement
 												
 						// TODO: if separate dates exist then need to add second completion date to create view
@@ -322,9 +324,9 @@ class ConsentAgreementController {
 						}
 					}
 					println "Success saving consent!"
-                    flash.message = "<br>${consentAgreementInstance?.consent?.name} Result saved as ${consentAgreementInstance?.trackedItem?.result?.result?.name}"
+                    flash.message = "<br>${consentAgreementInstance?.consent?.name} Result saved as ${consentAgreementInstance?.trackedItem?.result?.name}"
 					if (consent.childInstrument && childTrackedItemInstance) {
-						flash.message = "<br>${childConsentAgreementInstance?.consent?.name} Result saved as ${childConsentAgreementInstance?.trackedItem?.result?.result?.name}"
+						flash.message = "<br>${childConsentAgreementInstance?.consent?.name} Result saved as ${childConsentAgreementInstance?.trackedItem?.result?.name}"
 					}
                     redirect(action: "find")
                 }
