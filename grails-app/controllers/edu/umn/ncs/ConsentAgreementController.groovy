@@ -14,7 +14,7 @@ import edu.umn.ncs.consent.ConsentInstrument
 import org.joda.time.format.DateTimeFormat
 
 // Let's use security annotations
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.Secured
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_STRESS'])
 class ConsentAgreementController {
@@ -23,7 +23,7 @@ class ConsentAgreementController {
 	
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
     def appName = 'consent'
-    def authenticateService
+    def springSecurityService
 	def logResultService
 	
 	
@@ -170,7 +170,7 @@ class ConsentAgreementController {
 		
     def save = {
 		def now = new Date()
-		def username = authenticateService.principal().getUsername()
+		def username = springSecurityService.principal.getUsername()
 		def consentAgreementInstance = new ConsentAgreement(params)
 		def trackedItemInstance = TrackedItem.get(consentAgreementInstance?.trackedItem?.id)
 		// set username
@@ -449,7 +449,7 @@ class ConsentAgreementController {
         def consentAgreementInstance = ConsentAgreement.get(params.id)
 		def trackedItemInstance = TrackedItem.get(consentAgreementInstance?.trackedItem?.id)
 
-        //def username = authenticateService.principal().username
+        //def username = springSecurityService.principal.username
         //consentAgreementInstance.userUpdated = username
         // I think this is optional
         //consentAgreementInstance.lastUpdated = new Date()

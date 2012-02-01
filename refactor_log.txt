@@ -1,0 +1,17 @@
+Starting Process at Tue Jan 31 20:18:08 CST 2012
+Updating Config.groovy
+Moving DataSource.groovy to /home/AD/ajz/development/grails/ncs/config/development/ncs-consent-entry-config.groovy
+Adding security plugin dependencies to grails-app/conf/BuildConfig.groovy
+Removing plugins.umn-acegi from application.properties
+./grails-app/controllers/edu/umn/ncs/ConsentAgreementController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/controllers/edu/umn/ncs/ConsentAgreementController.groovy	Updating	Definition	def springSecurityService
+./grails-app/controllers/edu/umn/ncs/ConsentAgreementController.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/services/edu/umn/ncs/LogResultService.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/services/edu/umn/ncs/LogResultService.groovy	Updating	Definition	def springSecurityService
+./grails-app/services/edu/umn/ncs/LogResultService.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/views/layouts/ncs.gsp\tUpdating\tTags\tloggedInUserInfo
+./grails-app/views/layouts/ncs.gsp\tUpdating\tTags\tusername
+./grails-app/views/layouts/ncs.gsp\tUpdating\tTags\tifLoggedIn
+./grails-app/views/layouts/ncs.gsp\tUpdating\tTags\tifNotLoggedIn
+Starting Process at Tue Jan 31 20:18:41 CST 2012
+Starting Process at Tue Jan 31 20:18:47 CST 2012

@@ -7,13 +7,13 @@ import edu.umn.ncs.ConsentAgreement
 import edu.umn.ncs.ItemResult
 
 // Let's us use security annotations
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured;
+import grails.plugins.springsecurity.Secured;
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_STRESS'])
 class LogResultService {
 	def dataSource
 	
-	def authenticateService
+	def springSecurityService
 	private static LocalTime midnight = new LocalTime(0,0)
 	
 	static transactional = true
@@ -112,7 +112,7 @@ class LogResultService {
 			
 			if (responseGroup) {
 
-				def username = authenticateService.principal().getUsername()
+				def username = springSecurityService.principal.getUsername()
 				def appName = "consent-entry"
 				def receivedDate = receiptDate 
 				
@@ -236,7 +236,7 @@ class LogResultService {
 	def auditLog(className, eventName, newValue, oldValue, persistedObjectId, propertyName){
 		
 		def message = ""
-		def username = authenticateService.principal().getUsername()
+		def username = springSecurityService.principal.getUsername()
 		
 		def auditLog = new AuditLogEvent(actor: username,
 			className: className,
